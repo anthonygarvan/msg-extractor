@@ -971,8 +971,8 @@ class _OleDirectoryEntry:
         # check if stream is not already referenced elsewhere:
         if self.entry_type in (STGTY_ROOT, STGTY_STREAM) and self.size > 0:
             # only streams can be in MiniFAT
-            if self.size < olefile.minisectorcutoff
-            and self.entry_type == STGTY_STREAM:
+            if (self.size < olefile.minisectorcutoff and
+                    self.entry_type == STGTY_STREAM):
                     # ministream object
                 minifat = True
             else:
