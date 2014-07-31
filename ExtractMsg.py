@@ -7,11 +7,11 @@ ExtractMsg:
 https://github.com/mattgwwalker/msg-extractor
 """
 
-__author__  = "Matthew Walker"
-__date__    = "2013-11-19"
+__author__ = "Matthew Walker"
+__date__ = "2013-11-19"
 __version__ = '0.2'
 
-#--- LICENSE ------------------------------------------------------------------
+# --- LICENSE ------------------------------------------------------------
 #
 #    Copyright 2013 Matthew Walker
 #
@@ -28,7 +28,8 @@ __version__ = '0.2'
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import OleFileIO_PL as OleFile  # Used version 0.25 http://www.decalage.info/python/olefileio
+# Used version 0.25 http://www.decalage.info/python/olefileio
+import OleFileIO_PL as OleFile
 from email.parser import Parser as EmailParser
 import email.utils
 import os.path
@@ -36,8 +37,8 @@ import glob
 import traceback
 
 
-# This property information was sourced from 
-# http://www.fileformat.info/format/outlookmsg/index.htm 
+# This property information was sourced from
+# http://www.fileformat.info/format/outlookmsg/index.htm
 # on 2013-07-22.
 properties = {
     '001A': 'Message class',
@@ -163,15 +164,16 @@ def windowsUnicode(string):
 
 
 class Attachment:
+
     def __init__(self, msg, dir):
         # Get long filename
-        self.longFilename = msg._getStringStream( [dir, '__substg1.0_3707'] )
+        self.longFilename = msg._getStringStream([dir, '__substg1.0_3707'])
 
         # Get short filename
-        self.shortFilename = msg._getStringStream( [dir, '__substg1.0_3704'] )
+        self.shortFilename = msg._getStringStream([dir, '__substg1.0_3704'])
 
         # Get attachment data
-        self.data = msg._getStream( [dir, '__substg1.0_37010102'] )
+        self.data = msg._getStream([dir, '__substg1.0_37010102'])
 
     def save(self):
         # Use long filename as first preference
@@ -183,15 +185,20 @@ class Attachment:
         if filename is None:
             import random
             import string
-            filename = 'UnknownFilename ' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))+".bin"
+            filename = 'UnknownFilename ' + \
+                ''.join(
+                    random.choice(
+                        string.ascii_uppercase +
+                        string.digits) for x in range(5)) + ".bin"
         f = open(filename, 'wb')
         f.write(self.data)
         f.close()
 
+
 class Message(OleFile.OleFileIO):
+
     def __init__(self, filename):
         OleFile.OleFileIO.__init__(self, filename)
-
 
     def _getStream(self, filename):
         if self.exists(filename):
@@ -213,8 +220,8 @@ class Message(OleFile.OleFileIO):
             # Join with slashes to make it easier to append the type
             filename = "/".join(filename)
 
-        asciiVersion = self._getStream(filename+'001E')
-        unicodeVersion = windowsUnicode(self._getStream(filename+'001F'))
+        asciiVersion = self._getStream(filename + '001E')
+        unicodeVersion = windowsUnicode(self._getStream(filename + '001F'))
         if asciiVersion is None:
             return unicodeVersion
         elif unicodeVersion is None:
@@ -240,7 +247,7 @@ class Message(OleFile.OleFileIO):
             else:
                 self._header = None
             return self._header
-            
+
     @property
     def date(self):
         # Get the message's header and extract the date
@@ -262,7 +269,7 @@ class Message(OleFile.OleFileIO):
             if self.header is not None:
                 headerResult = self.header["from"]
                 if headerResult is not None:
-                    self._sender = headerResult 
+                    self._sender = headerResult
                     return headerResult
 
             # Extract from other fields
@@ -288,16 +295,15 @@ class Message(OleFile.OleFileIO):
             if self.header is not None:
                 headerResult = self.header["to"]
                 if headerResult is not None:
-                    self._to = headerResult 
+                    self._to = headerResult
                     return headerResult
 
             # Extract from other fields
-            # TODO: This should really extract data from the recip folders, 
+            # TODO: This should really extract data from the recip folders,
             # but how do you know which is to/cc/bcc?
             display = self._getStringStream('__substg1.0_0E04')
             self._to = display
             return display
-
 
     @property
     def cc(self):
@@ -308,17 +314,15 @@ class Message(OleFile.OleFileIO):
             if self.header is not None:
                 headerResult = self.header["cc"]
                 if headerResult is not None:
-                    self._cc = headerResult 
+                    self._cc = headerResult
                     return headerResult
 
             # Extract from other fields
-            # TODO: This should really extract data from the recip folders, 
+            # TODO: This should really extract data from the recip folders,
             # but how do you know which is to/cc/bcc?
             display = self._getStringStream('__substg1.0_0E03')
             self._cc = display
             return display
-
-
 
     @property
     def body(self):
@@ -334,16 +338,16 @@ class Message(OleFile.OleFileIO):
             attachmentDirs = []
 
             for dir in self.listdir():
-                if dir[0].startswith('__attach') and dir[0] not in attachmentDirs:
+                if dir[0].startswith(
+                        '__attach') and dir[0] not in attachmentDirs:
                     attachmentDirs.append(dir[0])
 
             self._attachments = []
-        
+
             for attachmentDir in attachmentDirs:
-                self._attachments.append( Attachment( self, attachmentDir ) )
+                self._attachments.append(Attachment(self, attachmentDir))
 
             return self._attachments
-
 
     def save(self, raw=False):
         # Create a directory based on the date and subject of the message
@@ -352,7 +356,7 @@ class Message(OleFile.OleFileIO):
             dirName = '{0:02d}-{1:02d}-{2:02d}_{3:02d}{4:02d}'.format(*d)
         else:
             dirName = "UnknownDate"
-            
+
         if self.subject is None:
             subject = "[No subject]"
         else:
@@ -360,13 +364,12 @@ class Message(OleFile.OleFileIO):
 
         dirName = dirName + " " + subject
 
-
         def addNumToDir(dirName):
             # Attempt to create the directory with a '(n)' appended
             dirCreated = False
-            for i in range(2,100):
+            for i in range(2, 100):
                 try:
-                    newDirName = dirName+" ("+str(i)+")"
+                    newDirName = dirName + " (" + str(i) + ")"
                     os.makedirs(newDirName)
                     return dirName
                 except:
@@ -380,7 +383,10 @@ class Message(OleFile.OleFileIO):
             if newDirName is not None:
                 dirName = newDirName
             else:
-                raise Exception("Failed to create directory '"+dirName+"'.  Does it already exist?")
+                raise Exception(
+                    "Failed to create directory '" +
+                    dirName +
+                    "'.  Does it already exist?")
 
         oldDir = os.getcwd()
         try:
@@ -389,14 +395,15 @@ class Message(OleFile.OleFileIO):
             # Save the message body
             f = open("message.txt", "w")
             # From, to , cc, subject, date
+
             def xstr(s):
                 return '' if s is None else str(s)
 
-            f.write("From: "+xstr(self.sender)+"\n")
-            f.write("To: "+xstr(self.to)+"\n")
-            f.write("CC: "+xstr(self.cc)+"\n")
-            f.write("Subject: "+xstr(self.subject)+"\n")
-            f.write("Date: "+xstr(self.date)+"\n")
+            f.write("From: " + xstr(self.sender) + "\n")
+            f.write("To: " + xstr(self.to) + "\n")
+            f.write("CC: " + xstr(self.cc) + "\n")
+            f.write("Subject: " + xstr(self.subject) + "\n")
+            f.write("Date: " + xstr(self.date) + "\n")
             f.write("-----------------\n\n")
 
             f.write(self.body)
@@ -412,7 +419,6 @@ class Message(OleFile.OleFileIO):
         finally:
             # Return to previous directory
             os.chdir(oldDir)
-
 
     def saveRaw(self):
         # Create a 'raw' folder
@@ -432,7 +438,7 @@ class Message(OleFile.OleFileIO):
                     sysdir = sysdir + " - " + properties[code]
                 os.makedirs(sysdir)
                 os.chdir(sysdir)
-                
+
                 # Generate appropriate filename
                 if dir[-1].endswith("001E"):
                     filename = "contents.txt"
@@ -441,18 +447,14 @@ class Message(OleFile.OleFileIO):
 
                 # Save contents of directory
                 f = open(filename, 'wb')
-                f.write( self._getStream(dir) )
+                f.write(self._getStream(dir))
                 f.close()
 
                 # Return to base directory
                 os.chdir(sysRawDir)
 
-                
-
         finally:
             os.chdir(oldDir)
-
-
 
     def dump(self):
         # Prints out a summary of the message
@@ -461,12 +463,12 @@ class Message(OleFile.OleFileIO):
         print 'Date:', self.date
         print 'Body:'
         print self.body
-        
+
     def debug(self):
         for dir in self.listdir():
-            if dir[-1].endswith('001E'): # FIXME: Check for unicode 001F too
-                print "Directory: "+str(dir)
-                print "Contents: "+self._getStream(dir)
+            if dir[-1].endswith('001E'):  # FIXME: Check for unicode 001F too
+                print "Directory: " + str(dir)
+                print "Contents: " + self._getStream(dir)
 
 
 if __name__ == "__main__":
@@ -475,7 +477,11 @@ if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print __doc__
         print """
-Launched from command line, this script parses Microsoft Outlook Message files and save their contents to the current directory.  On error the script will write out a 'raw' directory will all the details from the file, but in a less-than-desirable format.  To force this mode, the flag '--raw' can be specified.
+Launched from command line, this script parses Microsoft Outlook Message files
+and save their contents to the current directory.  On error the script will
+write out a 'raw' directory will all the details from the file, but in a
+less-than-desirable format.  To force this mode, the flag '--raw' can be
+specified.
 
 Usage:  <file> [file2 ...]
    or:  --raw <file>
@@ -496,7 +502,6 @@ Usage:  <file> [file2 ...]
                 else:
                     msg.save()
             except:
-                #msg.debug()
-                print "Error with file '"+filename+"': "+traceback.format_exc()
-
-
+                # msg.debug()
+                print "Error with file '" + filename + "': " + \
+                    traceback.format_exc()
