@@ -27,7 +27,7 @@ __author__ = "Philippe Lagadec, Fredrik Lundh (Secret Labs AB)"
 __date__ = "2013-05-27"
 __version__ = '0.25'
 
-# --- LICENSE ------------------------------------------------------------------
+# --- LICENSE ----------------------------------------------------------------
 
 # OleFileIO_PL is an improved version of the OleFileIO module from the
 # Python Imaging Library (PIL).
@@ -46,8 +46,8 @@ __version__ = '0.25'
 # associated documentation for any purpose and without fee is hereby granted,
 # provided that the above copyright notice appears in all copies, and that both
 # that copyright notice and this permission notice appear in supporting
-# documentation, and that the name of Secret Labs AB or the author(s) not be used
-# in advertising or publicity pertaining to distribution of the software
+# documentation, and that the name of Secret Labs AB or the author(s) not be
+# used in advertising or publicity pertaining to distribution of the software
 # without specific, written prior permission.
 #
 # SECRET LABS AB AND THE AUTHORS DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
@@ -104,22 +104,26 @@ __version__ = '0.25'
 #                      - added option '-c' in main to check all streams
 # 2009-12-10 v0.19 PL: - bugfix for 32 bit arrays on 64 bits platforms
 #                        (thanks to Ben G. and Martijn for reporting the bug)
-# 2009-12-11 v0.20 PL: - bugfix in OleFileIO.open when filename is not plain str
+# 2009-12-11 v0.20 PL: - bugfix in OleFileIO.open when filename is not plain
+#                         str
 # 2010-01-22 v0.21 PL: - added support for big-endian CPUs such as PowerPC Macs
 # 2012-02-16 v0.22 PL: - fixed bug in getproperties, patch by chuckleberryfinn
 #                        (https://bitbucket.org/decalage/olefileio_pl/issue/7)
 # - added close method to OleFileIO (fixed issue #2)
-# 2012-07-25 v0.23 PL: - added support for file-like objects (patch by mete0r_kr)
-# 2013-05-05 v0.24 PL: - getproperties: added conversion from filetime to python
-#                        datetime
+# 2012-07-25 v0.23 PL: - added support for file-like objects
+#                         (patch by mete0r_kr)
+# 2013-05-05 v0.24 PL: - getproperties: added conversion from filetime to
+#                         python datetime
 #                      - main: displays properties with date format
 #                      - new class OleMetadata to parse standard properties
 #                      - added get_metadata method
 # 2013-05-07 v0.24 PL: - a few improvements in OleMetadata
 # 2013-05-24 v0.25 PL: - getproperties: option to not convert some timestamps
-#                      - OleMetaData: total_edit_time is now a number of seconds,
+#                      - OleMetaData: total_edit_time is now a number of
+#                         seconds,
 #                        not a timestamp
-#                      - getproperties: added support for VT_BOOL, VT_INT, V_UINT
+#                      - getproperties: added support for VT_BOOL, VT_INT,
+#                       V_UINT
 #                      - getproperties: filter out null chars from strings
 #                      - getproperties: raise non-fatal defects instead of
 #                        exceptions when properties cannot be parsed properly
@@ -173,7 +177,7 @@ __version__ = '0.25'
 # 4) remove a stream/storage: free sectors in FAT/MiniFAT
 # 5) allocate new sectors in FAT/MiniFAT
 # 6) create new storage/stream
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 #
 # THIS IS WORK IN PROGRESS
@@ -213,7 +217,7 @@ __version__ = '0.25'
 # See the README file for information on usage and redistribution.
 #
 
-#------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 import string
 import StringIO
@@ -223,10 +227,10 @@ import os.path
 import sys
 import datetime
 
-#[PL] Define explicitly the public API to avoid private objects in pydoc:
+# [PL] Define explicitly the public API to avoid private objects in pydoc:
 __all__ = ['OleFileIO', 'isOleFile']
 
-#[PL] workaround to fix an issue with array item size on 64 bits systems:
+# [PL] workaround to fix an issue with array item size on 64 bits systems:
 if array.array('L').itemsize == 4:
     # on 32 bits platforms, long integers in an array are 32 bits:
     UINT32 = 'L'
@@ -238,7 +242,7 @@ else:
         'Need to fix a bug with 32 bit arrays, please contact author...')
 
 
-#[PL] These workarounds were inspired from the Path module
+# [PL] These workarounds were inspired from the Path module
 # (see http://www.jorendorff.com/articles/python/path/)
 # TODO: test with old Python versions
 
@@ -378,7 +382,8 @@ for keyword, var in vars().items():
 WORD_CLSID = "00020900-0000-0000-C000-000000000046"
 # TODO: check Excel, PPT, ...
 
-# [PL]: Defect levels to classify parsing errors - see OleFileIO._raise_defect()
+# [PL]: Defect levels to classify parsing errors -
+# see OleFileIO._raise_defect()
 DEFECT_UNSURE = 10    # a case which looks weird, but not sure it's a defect
 DEFECT_POTENTIAL = 20    # a potential defect
 DEFECT_INCORRECT = 30    # an error according to specifications, but parsing
@@ -392,7 +397,7 @@ for key in vars().keys():
         __all__.append(key)
 
 
-# --- FUNCTIONS ----------------------------------------------------------------
+# --- FUNCTIONS --------------------------------------------------------------
 
 def isOleFile(filename):
     """
@@ -488,7 +493,7 @@ except NameError:
         return filter(ord, s)
 
 
-# === CLASSES ==================================================================
+# === CLASSES =================================================================
 
 class OleMetadata:
 
@@ -499,7 +504,8 @@ class OleMetadata:
     codepage, title, subject, author, keywords, comments, template,
     last_saved_by, revision_number, total_edit_time, last_printed, create_time,
     last_saved_time, num_pages, num_words, num_chars, thumbnail,
-    creating_application, security, codepage_doc, category, presentation_target,
+    creating_application, security, codepage_doc, category,
+    presentation_target,
     bytes, lines, paragraphs, slides, notes, hidden_slides, mm_clips,
     scale_crop, heading_pairs, titles_of_parts, manager, company, links_dirty,
     chars_with_spaces, unused, shared_doc, link_base, hlinks, hlinks_changed,
@@ -511,15 +517,18 @@ class OleMetadata:
     References for SummaryInformation stream:
     - http://msdn.microsoft.com/en-us/library/dd942545.aspx
     - http://msdn.microsoft.com/en-us/library/dd925819%28v=office.12%29.aspx
-    - http://msdn.microsoft.com/en-us/library/windows/desktop/aa380376%28v=vs.85%29.aspx
+    - http://msdn.microsoft.com/en-us/library/windows/desktop/
+    aa380376%28v=vs.85%29.aspx
     - http://msdn.microsoft.com/en-us/library/aa372045.aspx
     - http://sedna-soft.de/summary-information-stream/
     - http://poi.apache.org/apidocs/org/apache/poi/hpsf/SummaryInformation.html
 
     References for DocumentSummaryInformation stream:
     - http://msdn.microsoft.com/en-us/library/dd945671%28v=office.12%29.aspx
-    - http://msdn.microsoft.com/en-us/library/windows/desktop/aa380374%28v=vs.85%29.aspx
-    - http://poi.apache.org/apidocs/org/apache/poi/hpsf/DocumentSummaryInformation.html
+    - http://msdn.microsoft.com/en-us/library/windows/desktop/
+    aa380374%28v=vs.85%29.aspx
+    - http://poi.apache.org/apidocs/org/apache/poi/hpsf/
+    DocumentSummaryInformation.html
     """
 
     # attribute names for SummaryInformation stream properties:
@@ -637,7 +646,8 @@ class OleMetadata:
         Parse standard properties of an OLE file, from the streams
         "\x05SummaryInformation" and "\x05DocumentSummaryInformation",
         if present.
-        Properties are converted to strings, integers or python datetime objects.
+        Properties are converted to strings, integers or python datetime
+        # objects.
         If a property is not present, its value is set to None.
         """
         # first set all attributes to None:
@@ -645,7 +655,8 @@ class OleMetadata:
             setattr(self, attrib, None)
         if olefile.exists("\x05SummaryInformation"):
             # get properties from the stream:
-            # (converting timestamps to python datetime, except total_edit_time,
+            # (converting timestamps to python datetime,
+            # except total_edit_time,
             # which is property #10)
             props = olefile.getproperties(
                 "\x05SummaryInformation",
@@ -680,7 +691,7 @@ class OleMetadata:
             print '- %s: %s' % (prop, repr(value))
 
 
-# --- _OleStream ---------------------------------------------------------------
+# --- _OleStream -------------------------------------------------------------
 
 class _OleStream(StringIO.StringIO):
 
@@ -717,8 +728,10 @@ class _OleStream(StringIO.StringIO):
         return    : a StringIO instance containing the OLE stream
         """
         debug('_OleStream.__init__:')
+        debug_str = '  sect=%d (%X), size=%d, offset=%d, sectorsize=%d, \
+                    len(fat)=%d, fp=%s'
         debug(
-            '  sect=%d (%X), size=%d, offset=%d, sectorsize=%d, len(fat)=%d, fp=%s' %
+            debug_str %
             (sect, sect, size, offset, sectorsize, len(fat), repr(fp)))
         # [PL] To detect malformed documents with FAT loops, we compute the
         # expected number of sectors in the stream:
@@ -737,7 +750,8 @@ class _OleStream(StringIO.StringIO):
         # sectors in the given FAT:
         if nb_sectors > len(fat):
             raise IOError('malformed OLE document, stream too large')
-        # optimization(?): data is first a list of strings, and join() is called
+        # optimization(?): data is first a list of strings, and join() is
+        # called
         # at the end to concatenate all in one string.
         # (this may not be really useful with recent Python versions)
         data = []
@@ -760,11 +774,11 @@ class _OleStream(StringIO.StringIO):
             if sect < 0 or sect >= len(fat):
                 debug('sect=%d (%X) / len(fat)=%d' % (sect, sect, len(fat)))
                 debug('i=%d / nb_sectors=%d' % (i, nb_sectors))
-# #                tmp_data = string.join(data, "")
-# #                f = open('test_debug.bin', 'wb')
+# tmp_data = string.join(data, "")
+# f = open('test_debug.bin', 'wb')
 # f.write(tmp_data)
 # f.close()
-# #                debug('data read so far: %d bytes' % len(tmp_data))
+# debug('data read so far: %d bytes' % len(tmp_data))
                 raise IOError('incorrect OLE FAT, sector index out of range')
             # TODO: merge this code with OleFileIO.getsect() ?
             # TODO: check if this works with 4K sectors:
@@ -781,7 +795,8 @@ class _OleStream(StringIO.StringIO):
             # sectorsize.
             if len(sector_data) != sectorsize and sect != (len(fat) - 1):
                 debug(
-                    'sect=%d / len(fat)=%d, seek=%d / filesize=%d, len read=%d' %
+                    'sect=%d / len(fat)=%d, seek=%d / filesize=%d, \
+                    len read=%d' %
                     (sect,
                      len(fat),
                         offset +
@@ -822,7 +837,7 @@ class _OleStream(StringIO.StringIO):
         # Then the _OleStream object can be used as a read-only file object.
 
 
-# --- _OleDirectoryEntry -------------------------------------------------------
+# --- _OleDirectoryEntry -----------------------------------------------------
 
 class _OleDirectoryEntry:
 
@@ -834,11 +849,14 @@ class _OleDirectoryEntry:
     # struct to parse directory entries:
     # <: little-endian byte order
     # 64s: string containing entry name in unicode (max 31 chars) + null char
-    # H: uint16, number of bytes used in name buffer, including null = (len+1)*2
+    # H: uint16, number of bytes used in name buffer, including
+    # null = (len+1)*2
     # B: uint8, dir entry type (between 0 and 5)
     # B: uint8, color: 0=black, 1=red
-    # I: uint32, index of left child node in the red-black tree, NOSTREAM if none
-    # I: uint32, index of right child node in the red-black tree, NOSTREAM if none
+    # I: uint32, index of left child node in the red-black tree, NOSTREAM if
+    # none
+    # I: uint32, index of right child node in the red-black tree, NOSTREAM if
+    # none
     # I: uint32, index of child root node if it is a storage, else NOSTREAM
     # 16s: CLSID, unique identifier (only used if it is a storage)
     # I: uint32, user flags
@@ -846,7 +864,8 @@ class _OleDirectoryEntry:
     # 8s: uint64, modification timestamp or zero
     # I: uint32, SID of first sector if stream or ministream, SID of 1st sector
     #    of stream containing ministreams if root entry, 0 otherwise
-    # I: uint32, total stream size in bytes if stream (low 32 bits), 0 otherwise
+    # I: uint32, total stream size in bytes if stream (low 32 bits), 0
+    # otherwise
     # I: uint32, total stream size in bytes if stream (high 32 bits), 0
     # otherwise
     STRUCT_DIRENTRY = '<64sHBBIII16sI8s8sIII'
@@ -952,8 +971,9 @@ class _OleDirectoryEntry:
         # check if stream is not already referenced elsewhere:
         if self.entry_type in (STGTY_ROOT, STGTY_STREAM) and self.size > 0:
             # only streams can be in MiniFAT
-            if self.size < olefile.minisectorcutoff and self.entry_type == STGTY_STREAM:
-                # ministream object
+            if self.size < olefile.minisectorcutoff
+            and self.entry_type == STGTY_STREAM:
+                    # ministream object
                 minifat = True
             else:
                 minifat = False
@@ -990,7 +1010,8 @@ class _OleDirectoryEntry:
         child_sid : index of child directory entry to use, or None when called
                     first time for the root. (only used during recursion)
         """
-        # [PL] this method was added to use simple recursion instead of a complex
+        # [PL] this method was added to use simple recursion instead of a
+        # complex
         # algorithm.
         # if this is not a storage or a leaf of the tree, nothing to do:
         if child_sid == NOSTREAM:
@@ -1003,7 +1024,8 @@ class _OleDirectoryEntry:
         # get child direntry:
         child = self.olefile._load_direntry(child_sid)  # direntries[child_sid]
         debug(
-            'append_kids: child_sid=%d - %s - sid_left=%d, sid_right=%d, sid_child=%d' %
+            'append_kids: child_sid=%d - %s - sid_left=%d, sid_right=%d, \
+            sid_child=%d' %
             (child.sid,
              repr(
                  child.name),
@@ -1054,7 +1076,7 @@ class _OleDirectoryEntry:
             kid.dump(tab + 2)
 
 
-# --- OleFileIO ----------------------------------------------------------------
+# --- OleFileIO ---------------------------------------------------------------
 
 class OleFileIO:
 
@@ -1110,10 +1132,13 @@ class OleFileIO:
         for the OleFileIO object.
 
         defect_level: defect level, possible values are:
-            DEFECT_UNSURE    : a case which looks weird, but not sure it's a defect
+            DEFECT_UNSURE    : a case which looks weird, but not sure it's a
+            defect
             DEFECT_POTENTIAL : a potential defect
-            DEFECT_INCORRECT : an error according to specifications, but parsing can go on
-            DEFECT_FATAL     : an error which cannot be ignored, parsing is impossible
+            DEFECT_INCORRECT : an error according to specifications, but
+            parsing can go on
+            DEFECT_FATAL     : an error which cannot be ignored, parsing is
+            impossible
         message: string describing the defect, used with raised exception.
         exception_type: exception class to be raised, IOError by default
         """
@@ -1172,19 +1197,23 @@ class OleFileIO:
 
         # [PL] header structure according to AAF specifications:
         # Header
-        # struct StructuredStorageHeader { // [offset from start (bytes), length (bytes)]
+        # struct StructuredStorageHeader { // [offset from start (bytes),
+        # length (bytes)]
         # BYTE _abSig[8]; // [00H,08] {0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1,
         # // 0x1a, 0xe1} for current version
         # CLSID _clsid;   // [08H,16] reserved must be zero (WriteClassStg/
         # // GetClassFile uses root directory class id)
         # USHORT _uMinorVersion; // [18H,02] minor version of the format: 33 is
         # // written by reference implementation
-        # USHORT _uDllVersion;   // [1AH,02] major version of the dll/format: 3 for
+        # USHORT _uDllVersion;   // [1AH,02] major version of the dll/format:
+        # 3 for
         # // 512-byte sectors, 4 for 4 KB sectors
-        # USHORT _uByteOrder;    // [1CH,02] 0xFFFE: indicates Intel byte-ordering
+        # USHORT _uByteOrder;    // [1CH,02] 0xFFFE: indicates Intel
+        # byte-ordering
         # USHORT _uSectorShift;  // [1EH,02] size of sectors in power-of-two;
         # // typically 9 indicating 512-byte sectors
-        # USHORT _uMiniSectorShift; // [20H,02] size of mini-sectors in power-of-two;
+        # USHORT _uMiniSectorShift; // [20H,02] size of mini-sectors in
+        # power-of-two;
         # // typically 6 indicating 64-byte mini-sectors
         # USHORT _usReserved; // [22H,02] reserved, must be zero
         # ULONG _ulReserved1; // [24H,04] reserved, must be zero
@@ -1193,20 +1222,24 @@ class OleFileIO:
         # // sectors
         # FSINDEX _csectFat; // [2CH,04] number of SECTs in the FAT chain
         # SECT _sectDirStart; // [30H,04] first SECT in the directory chain
-        # DFSIGNATURE _signature; // [34H,04] signature used for transactions; must
+        # DFSIGNATURE _signature; // [34H,04] signature used for transactions;
+        # must
         # // be zero. The reference implementation
         # // does not support transactions
-        # ULONG _ulMiniSectorCutoff; // [38H,04] maximum size for a mini stream;
+        # ULONG _ulMiniSectorCutoff; // [38H,04] maximum size for a mini
+        # stream;
         # // typically 4096 bytes
         # SECT _sectMiniFatStart; // [3CH,04] first SECT in the MiniFAT chain
-        # FSINDEX _csectMiniFat; // [40H,04] number of SECTs in the MiniFAT chain
+        # FSINDEX _csectMiniFat; // [40H,04] number of SECTs in the MiniFAT
+        # chain
         # SECT _sectDifStart; // [44H,04] first SECT in the DIFAT chain
         # FSINDEX _csectDif; // [48H,04] number of SECTs in the DIFAT chain
         # SECT _sectFat[109]; // [4CH,436] the SECTs of first 109 FAT sectors
         # };
 
         # [PL] header decoding:
-        # '<' indicates little-endian byte ordering for Intel (cf. struct module help)
+        # '<' indicates little-endian byte ordering for Intel
+        # (cf. struct module help)
         fmt_header = '<8s16sHHHHHHLLLLLLLLLL'
         header_size = struct.calcsize(fmt_header)
         debug(
@@ -1309,8 +1342,8 @@ class OleFileIO:
         self.minisectorsize = self.MiniSectorSize  # 1 << i16(header, 32)
         self.minisectorcutoff = self.MiniSectorCutoff  # i32(header, 56)
 
-        # check known streams for duplicate references (these are always in FAT,
-        # never in MiniFAT):
+        # check known streams for duplicate references (these are always in
+        # FAT, never in MiniFAT):
         self._check_duplicate_stream(self.sectDirStart)
         # check MiniFAT only if it is not empty:
         if self.csectMiniFat:
@@ -1473,13 +1506,13 @@ class OleFileIO:
         self.loadfat_sect(sect)
         # self.dumpfat(self.fat)
 # for i in range(0, len(sect), 4):
-# #          ix = i32(sect, i)
+# ix = i32(sect, i)
 # [PL] if ix == -2 or ix == -1: # ix == 0xFFFFFFFEL or ix == 0xFFFFFFFFL:
 # if ix == 0xFFFFFFFEL or ix == 0xFFFFFFFFL:
 # break
-# #          s = self.getsect(ix)
+# s = self.getsect(ix)
 # fat    = fat + map(lambda i, s=s: i32(s, i), range(0, len(s), 4))
-# #          fat = fat + array.array(UINT32, s)
+# fat = fat + array.array(UINT32, s)
         if self.csectDif != 0:
             # [PL] There's a DIFAT because file is larger than 6.8MB
             # some checks just in case:
@@ -1519,7 +1552,7 @@ class OleFileIO:
 # if len(self.fat) != self.csectFat:
 # FAT should contain csectFat blocks
 # print "FAT length: %d instead of %d" % (len(self.fat), self.csectFat)
-# #              raise IOError, 'incorrect DIFAT'
+# raise IOError, 'incorrect DIFAT'
         # since FAT is read from fixed-size sectors, it may contain more values
         # than the actual number of sectors in the file.
         # Keep only the relevant sector indexes:
@@ -1629,10 +1662,10 @@ class OleFileIO:
         # We start with a list of "None" object
         self.direntries = [None] * max_entries
 # for sid in xrange(max_entries):
-# #            entry = fp.read(128)
+# entry = fp.read(128)
 # if not entry:
 # break
-# #            self.direntries.append(_OleDirectoryEntry(entry, sid, self))
+# self.direntries.append(_OleDirectoryEntry(entry, sid, self))
         # load root entry:
         root_entry = self._load_direntry(0)
         # Root entry is the first entry:
